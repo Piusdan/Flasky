@@ -15,7 +15,7 @@
     </li>
     {% else %}
     <li>
-        <a href="{{ url_for(endpoint, page=p, **kwargs) }}">{{ p }}</a>
+        <a href="{{ url_for(endpoint, page = p, **kwargs) }}">{{ p }}</a>
     </li>
     {% endif %}
     {% else %}
@@ -24,7 +24,7 @@
     {% endfor %}
     <li {% if not pagination.has_next %} class="disabled" {% endif %}>
         <a href="{% if pagination.has_next %} {{ url_for(endpoint,
-        page = pagination.page + 1), **kwargs) }}{% else %}#{% endif %}">
+        page = pagination.page + 1, **kwargs) }}{% else %}#{% endif %}">
             &raquo;
         </a>
     </li>

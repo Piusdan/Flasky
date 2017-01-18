@@ -1,50 +1,52 @@
 {% extends "base.html" %}
 {% block page_content %}
-<div class="jumbotron">
+<div class="container">
     <div class="page-header">
 
     </div>
-    <div class="container">
-        {% if user.is_authenticated %}
-        <div class="row">
-          <div class="col-sm-6 col-md-12" align="center">
-            <div class="thumbnail">
-              <img src="{{ current_user.gravatar(size=256) }}" alt="profile-thumbnail">
-              <div class="caption">
-                <h3>{{ user.username }}</h3>
-                    <p>
-                        {% if user.name %}{{ user.name }}{% endif %}
-                        {% if user.location %}
-                        From <a href="http://maps.google.com/?q={{ user.location }}">
-                        {{ user.location }}
-                    </a>
-                        {% endif %}
-                    </p>
-                    {% if user.is_administrator() %}
-                    <p><a href="mailto:{{ user.email }}"></a>{{ user.email }}</p>
-                    {% endif %}
-                    {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
-                    <p>
-                        Member since {{ moment(user.member_since).format('L') }}.
-                        Last seen {{ moment(user.last_seen).fromNow() }}.
-                    </p>
-                  <p>
-                      <h3>Blog Posts</h3>
-                  <ul>{% include '_posts.html' %}</ul>
-                  </p>
-                  {% endif %}
-                <p>{% if current_user == user and not user.is_administrator() %}
-                    <a href="{{ url_for('main.edit_profile')}}" class="btn btn-primary" role="button">Edit Profile</a>
-                    {%
-                    endif %}
-                    {% if user.is_administrator() %}<a href="{{ url_for('main.edit_profile_admin', id=user.id) }}"
-                                                       class="btn btn-danger" role="button">[ADMIN] Edit
-                        Profile</a>{% endif %}</p>
-              </div>
+    {% if user.is_authenticated %}
+    <div class="row">
+        <div class="col-md-3">
+            <a href="#">
+                    <img class="img-responsive" src="{{ current_user.gravatar(size=256) }}" alt="">
+            </a>
             </div>
-          </div>
+        <div class="col-md-7">
+            <h3>{{ user.username }}</h3>
+            <h4>Subheading</h4>
+            <p>
+                {% if user.name %}{{ user.name }}{% endif %}
+                {% if user.location %}
+                From <a href="http://maps.google.com/?q={{ user.location }}">
+                {{ user.location }}
+            </a>
+                {% endif %}
+            </p>
+            {% if user.is_administrator() %}
+            <p><a href="mailto:{{ user.email }}"></a>{{ user.email }}</p>
+            {% endif %}
+            {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
+            <p>
+                Member since {{ moment(user.member_since).format('L') }}.
+                Last seen {{ moment(user.last_seen).fromNow() }}.
+            </p>
+            {% if current_user == user and not user.is_administrator() %}
+            <a href="{{ url_for('main.edit_profile')}}" class="btn btn-primary" role="button">Edit Profile
+            <span class="glyphicon glyphicon-chevron-right"></span></a>
+            {%endif %}
+            {% if user.is_administrator() %}
+            <a href="{{ url_for('main.edit_profile_admin', id=user.id) }}" class="btn btn-danger" role="button">
+                [ADMIN] EditProfile
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            </a>
+            {% endif %}
         </div>
     </div>
-</div>
+    <hr>
+
+    <h3>Blog Posts</h3>
+    {% include '_posts.html' %}
+    {% endif %}
+    </div>
 {% endblock %}
 

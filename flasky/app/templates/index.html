@@ -10,12 +10,11 @@
 		{{ wtf.quick_form(form) }}
 		{% endif %}
 	</div>
-	<div class="jumbotron">
-		{% include '_posts.html' %}
-		</div>
-	<div class="pagination">
-		{{ macros.pagination_widget(pagination, '.index') }}
-	</div>
-
-	</div>
+</div>
+<div class="container">
+	{% include '_posts.html' %}
+</div>
+<div class="pagination">
+	{{ macros.pagination_widget(pagination, '.index') }}
+</div>
 {% endblock %}
