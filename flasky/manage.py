@@ -1,3 +1,5 @@
+
+
 #!/usr/bin/env python
 import os
 from app import create_app, db
@@ -10,10 +12,23 @@ manager = Manager(app)
 migrate = Migrate(app, db)
 
 
+def deploy():
+    """ Run deployment tasks."""
+    from flask.ext.migrate import upgrade
+    from app.models import Role, User
+
+    # migrate database to latest revision
+    upgrade()
+
+    # create user roles
+    Role.insert_roles()
+
+
 def make_shell_context():
     return dict(app=app, db=db, User=User, Role=Role)
 manager.add_command("shell", Shell(make_context=make_shell_context))
 manager.add_command('db', MigrateCommand)
+
 
 @manager.command
 def test():
