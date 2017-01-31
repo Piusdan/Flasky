@@ -1,0 +1,52 @@
+<div class="content">
+    <div class="container-fluid">
+        <ul class="list-group">
+            {% for post in posts %}
+            <li class="list-group-item" style="border-left: none; border-right: none">
+                <div class="row">
+                    <div class="col-md-1">
+                         <a href="{{ url_for('.user', username=post.author.username) }}">
+                             <img src="{{ post.author.gravatar(size=100) }}" class="img-thumbnail" alt="">
+                         </a>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="row">
+                            <div class="col-md-3" align="left">
+                                <span class="username">
+                                 <a href="{{ url_for('.user', username=post.author.username) }}">
+                                     {{post.author.username }}
+                                 </a>
+                                </span>
+                            </div>
+                            <div class="col-md-3 col-md-offset-6" align="right">
+                                 <span class="timestamp">{{ moment(post.timestamp).fromNow() }}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="post-content">
+                                <p>{{ post.body }}</p>
+                            </div>
+                            <div class="post-footer" align="right">
+                                {% if current_user.is_administrator() and not current_user == post.author %}
+                                <a href="{{url_for('.edit', id=post.id) }}">
+                                    <span class="label label-danger">Edit [Admin]</span>
+                                </a>
+                                {% elif current_user == post.author %}
+                                <a href="{{ url_for('.edit', id=post.id) }}">
+                                    <span class="label label-primary">Edit</span>
+                                </a>
+                                {% endif %}
+                                 <a href="{{ url_for('.post', id=post.id) }}">
+                                    <span class="label label-default">Permalink</span>
+                                </a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+

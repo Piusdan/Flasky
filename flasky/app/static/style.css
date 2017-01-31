@@ -1,0 +1,11 @@
+.timestamp {
+text-align: right;
+}
+.username {
+text-align: left;
+color: darkblue;
+font-weight: bolder;
+}
+.post-footer {
+align: right;
+}

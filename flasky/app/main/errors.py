@@ -10,3 +10,8 @@ def page_not_found(error):
 @main.app_errorhandler(500)
 def internal_server_error(error):
     return render_template('500.html'), 500
+
+
+@main.app_errorhandler(403)
+def access_forbidden_error(error):
+    return render_template('403.html'), 403

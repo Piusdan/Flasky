@@ -5,6 +5,7 @@ from ..models import User
 from . forms import LoginForm, RegistrationForm
 from .. import db
 from .. email import send_email
+from .. send import AfricasTalking
 
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -39,8 +40,10 @@ def register():
         flash('You can now login')
         db.session.commit()
         token = user.generate_confirmation_token()
-        send_email(user.email, 'Confirm Your Account', 'auth/email/confirm', user=user, token=token)
-        flash('A confirmation email has been sent to you by email')
+        AT = AfricasTalking(message=token, phonenumber=form.phonenumber.data)
+        AT.send_sms()
+        # send_email(user.email, 'Confirm Your Account', 'auth/email/confirm', user=user, token=token)
+        flash('A confirmation message has been sent to you by sms')
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', form=form)
 
@@ -77,8 +80,12 @@ def unconfirmed():
 @login_required
 def resend_confirmation():
     mail = current_user.email
+    # phonenumber = current_user.phonenumber
     token = current_user.generate_confirmation_token()
     send_email(to=current_user.email, template='auth/email/confirm',
-               subject='Confirm Your Account', user=current_user, token=token)
-    flash('A new confirmation email has been sent to via email ' + mail)
+               subject='Confirm Your Account',
+               user=current_user, token=token)
+    # AT = AfricasTalking(message=token, phonenumber=phonenumber)
+    # AT.send_sms()
+    flash('A new confirmation message has been sent to via email to ' + mail)
     return redirect(url_for('main.index'))
