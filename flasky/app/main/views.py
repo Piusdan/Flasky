@@ -19,7 +19,7 @@ def index():
        return redirect(url_for('.index'))
     posts = Post.query.order_by(Post.timestamp.desc()).all()
     page = request.args.get('page', 1, type=int)
-    pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page, per_page=current_app.config['FLASKY_POSTS_PER_PAGE'],error_out=False)
+    pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page, per_page=8,error_out=False)
     return render_template('index.html', form=form, posts=posts, pagination=pagination)
 
 
@@ -72,3 +72,25 @@ def edit_profile_admin(id):
     form.location.data = user.location
     form.role.data = user.role_id
     return render_template('edit_profile.html', form=form, user=user)
+
+
+@main.route('/post/<int:id>')
+def post(id):
+    post = Post.query.get_or_404(id)
+    return render_template('post.html', posts=[post])
+
+
+@main.route('/edit/<int:id>', methods=['GET','POST'])
+@login_required
+def edit(id):
+    post = Post.query.get_or_404(id)
+    if current_user != post.author and not current_user.can(Permission.ADMINISTER):
+        abort(403)
+    form = PostForm()
+    if form.validate_on_submit():
+        post.body = form.body.data
+        db.session.add(post)
+        flash("The post has been updated.")
+        return redirect(url_for('.post', id=post.id))
+    form.body.data = post.body
+    return render_template('edit_post.html', form=form)

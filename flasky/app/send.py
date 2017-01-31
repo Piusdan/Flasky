@@ -4,8 +4,8 @@ from AfricasTalkingGateway import AfricasTalkingGateway, AfricasTalkingGatewayEx
 
 
 class AfricasTalking(object):
-    username = "Nyongesa"
-    apikey = "7df5ca02b98be748e2402cbf9f08bd469126db0fa307f9113eee33ce94f9a724"
+    username = "PiusDan"
+    apikey = "5dfcc116a8a9f9e56641ff31fbce1ca82896462d2683400e76712c351a686628"
     # Create a new instance of our awesome gateway class
     gateway = AfricasTalkingGateway(username, apikey)
 
@@ -20,9 +20,9 @@ class AfricasTalking(object):
         try:
             # Thats it, hit send and we'll take care of the rest.
 
-            self.results = gateway.sendMessage(self.to, self.message)
+            results = self.gateway.sendMessage(self.to, self.message)
 
-            for recipient in self.results:
+            for recipient in results:
                 # status is either "Success" or "error message"
                 print 'number=%s;status=%s;messageId=%s;cost=%s' % (recipient['number'],
                                                                     recipient[
@@ -32,11 +32,3 @@ class AfricasTalking(object):
                                                                     recipient['cost'])
         except AfricasTalkingGatewayException, e:
             print 'Encountered an error while sending: %s' % str(e)
-
-
-def main():
-    ATObj = AfricasTalking(message=message, phonenumber=phonenumber_list)
-    ATObj.send_sms() m
-
-if __name__ == '__main__':
-    main()
