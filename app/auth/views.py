@@ -1,4 +1,4 @@
-from flask import render_template, redirect, request, url_for, flash
+from flask import render_template, redirect, request, url_for, flash, current_app
 from flask.ext.login import login_user, logout_user, login_required, current_user
 from . import auth
 from ..models import User
@@ -40,10 +40,10 @@ def register():
         flash('You can now login')
         db.session.commit()
         token = user.generate_confirmation_token()
-        AT = AfricasTalking(message=token, phonenumber=form.phonenumber.data)
-        AT.send_sms()
-        # send_email(user.email, 'Confirm Your Account', 'auth/email/confirm', user=user, token=token)
-        flash('A confirmation message has been sent to you by sms')
+        # AT = AfricasTalking(message=token, phonenumber=form.phonenumber.data)
+        # AT.send_sms()
+        send_email(user.email, 'Confirm Your Account', 'auth/email/confirm', user=user, token=token)
+        flash('A confirmation message has been sent to you by email')
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', form=form)
 
