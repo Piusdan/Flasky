@@ -12,6 +12,7 @@ manager = Manager(app)
 migrate = Migrate(app, db)
 
 
+@manager.command
 def deploy():
     """ Run deployment tasks."""
     from flask.ext.migrate import upgrade
@@ -22,6 +23,9 @@ def deploy():
 
     # create user roles
     Role.insert_roles()
+
+    # create self-follows for all users
+    # User.add_self_follows()
 
 
 def make_shell_context():
