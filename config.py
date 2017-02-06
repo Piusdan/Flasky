@@ -38,6 +38,8 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data.sqlite')
+    MAIL_SERVER = 'smtp.googlemail.com'
+    MAIL_PORT = 587
 
     @classmethod
     def init_app(cls, app):
