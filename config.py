@@ -62,7 +62,7 @@ class ProductionConfig(Config):
         app.logger.addHandler(mail_handler)
 
 
-class HerokuCOnfig(ProductionConfig):
+class HerokuConfig(ProductionConfig):
     @classmethod
     def init_app(cls, app):
         ProductionConfig.init_app(app)
@@ -81,6 +81,7 @@ class HerokuCOnfig(ProductionConfig):
     SSL_DISABLE = bool(os.environ.get('SSL_DISABLE'))
 
 config = {
+    'heroku': HerokuConfig,
     'development': DevelopmentConfig,
     'testing': TestingConfig,
     'production': ProductionConfig,
