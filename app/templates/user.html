@@ -16,15 +16,9 @@
             <h4></h4>
             <p>
                 {% if user.name %}{{ user.name }}{% endif %}
-                {% if user.location %}
-                From <a href="http://maps.google.com/?q={{ user.location }}">
-                {{ user.location }}
-            </a>
-                {% endif %}
+                {% if user.location %}From <a href="http://maps.google.com/?q={{ user.location }}">{{ user.location }}</a>{% endif %}
             </p>
-            {% if user.is_administrator() %}
-            <p><a href="mailto:{{ user.email }}"></a>{{ user.email }}</p>
-            {% endif %}
+            {% if user.is_administrator() %}<p><a href="mailto:{{ user.email }}"></a>{{ user.email }}</p>{% endif %}
             {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
             <p>
                 Member since {{ moment(user.member_since).format('L') }}.
@@ -51,7 +45,7 @@
             {% if current_user.is_authenticated and user != current_user and user.is_following(current_user) %}
            | <span class="label label-default">Follows you</span>
             {% endif %}
-            {% if current_user == user and not current_user.is_administrator %}
+            {% if current_user == user %}
             <a href="{{ url_for('main.edit_profile')}}" class="btn btn-primary" role="button">Edit Profile
             <span class="glyphicon glyphicon-pencil"></span></a>
             {% endif %}
