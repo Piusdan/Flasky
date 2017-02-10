@@ -2,7 +2,6 @@
 {% block page_content %}
 <div class="container">
     <div class="page-header">
-
     </div>
     {% if user.is_authenticated %}
     <div class="row">
@@ -18,7 +17,8 @@
                 {% if user.name %}{{ user.name }}{% endif %}
                 {% if user.location %}From <a href="http://maps.google.com/?q={{ user.location }}">{{ user.location }}</a>{% endif %}
             </p>
-            {% if user.is_administrator() %}<p><a href="mailto:{{ user.email }}"></a>{{ user.email }}</p>{% endif %}
+            {% if current_user.is_administrator() %}<p><a href="mailto:{{ user.email }}"></a>{{ user.email }}</p>{%
+            endif %}
             {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
             <p>
                 Member since {{ moment(user.member_since).format('L') }}.
@@ -29,7 +29,7 @@
             </p>
             {% if current_user.can(Permission.FOLLOW) and user != current_user %}
                 {% if not current_user.is_following(user) %}
-                <a href="{{ url_for('.follow', username=user.usernmae) }}"
+                <a href="{{ url_for('.follow', username=user.username) }}"
                    class="btn btn-primary">Follow</a>
                 {% else %}
                 <a href="{{ url_for('.unfollow', username=user.username) }}"
@@ -45,11 +45,10 @@
             {% if current_user.is_authenticated and user != current_user and user.is_following(current_user) %}
            | <span class="label label-default">Follows you</span>
             {% endif %}
-            {% if current_user == user %}
+            {% if current_user == user and not current_user.is_administrator %}
             <a href="{{ url_for('main.edit_profile')}}" class="btn btn-primary" role="button">Edit Profile
-            <span class="glyphicon glyphicon-pencil"></span></a>
-            {% endif %}
-            {% if user.is_administrator() %}
+            <span class="glyphicon glyphicon-pencil"></span></a>{% endif %}
+            {% if current_user.is_administrator() %}
             <a href="{{ url_for('main.edit_profile_admin', id=user.id) }}" class="btn btn-danger" role="button">
                 [ADMIN] EditProfile
             <span class="glyphicon glyphicon-pencil"></span>
