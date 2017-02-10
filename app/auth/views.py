@@ -38,6 +38,7 @@ def register():
                     email=form.email.data)
         db.session.add(user)
         flash('You can now login')
+
         db.session.commit()
         token = user.generate_confirmation_token()
         # AT = AfricasTalking(message=token, phonenumber=form.phonenumber.data)

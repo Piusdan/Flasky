@@ -6,6 +6,8 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app, request
 from datetime import datetime
 import hashlib
+from markdown import markdown
+import bleach
 
 
 @login_manager.user_loader
@@ -59,6 +61,19 @@ class Post(db.Model):
     body = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow())
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    body_html = db.Column(db.Text)
+
+    @staticmethod
+    def on_changed_body(target, value, oldvalue, initiator):
+        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
+                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
+                        'h1', 'h2', 'h3', 'p']
+        target.body_html = bleach.linkify(bleach.clean(
+            markdown(value, output_format='html'),
+            tags=allowed_tags, strip=True
+        ))
+
+
 
     @staticmethod
     def generate_fake(count=100):
@@ -74,6 +89,8 @@ class Post(db.Model):
                      author=u)
             db.session.add(u)
             db.session.commit()
+
+db.event.listen(Post.body, 'set', Post.on_changed_body)
 
 
 class User(UserMixin, db.Model):
@@ -103,14 +120,26 @@ class User(UserMixin, db.Model):
                                 lazy='dynamic',
                                 cascade='all, delete-orphan')
 
+    @property
+    def followers(self):
+        return User.query.join(Follow, Follow.follower_id == User.id).filter(Follow.followed_id == self.id)
 
     @property
     def followed_posts(self):
         return Post.query.join(Follow, Follow.followed_id == Post.author_id)\
             .filter(Follow.follower_id == self.id)
 
+    @staticmethod
+    def add_self_follows():
+        for user in User.query.all():
+            if not user.is_following(user):
+                user.follow(user)
+                db.session.add(user)
+                db.session.commit()
+
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
+        self.follow(self)
         if self.role is None:
             if self.email == current_app.config['FLASKY_ADMIN']:
                 self.role = Role.query.filter_by(permissions=0xff).first()

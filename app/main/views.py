@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import render_template, session, redirect, url_for, abort, flash, request, current_app
+from flask import render_template, session, redirect, url_for, abort, flash, request, current_app, make_response
 from flask.ext.login import logout_user, login_required, current_user
 from . import main
 from .forms import PostForm, EditProfileForm, EditProfileAdminForm
@@ -26,9 +26,9 @@ def index():
         query = current_user.followed_posts
     else:
         query = Post.query
-    pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page, per_page=8, error_out=False)
-
-    return render_template('index.html', form=form, posts=posts, pagination=pagination)
+    pagination = query.order_by(Post.timestamp.desc()).paginate(page, per_page=8, error_out=False)
+    posts = pagination.items
+    return render_template('index.html', form=form, posts=posts, show_followed=show_followed, pagination=pagination)
 
 
 @main.route('/user/<username>')
@@ -153,3 +153,19 @@ def unfollow(username):
     current_user.unfollow(user)
     flash('You are now not following {}.'.format(username))
     return redirect(url_for('.user', username=username))
+
+
+@main.route('/all')
+@login_required
+def show_all():
+    resp = make_response(redirect(url_for('.index')))
+    resp.set_cookie('show_followed', '', max_age=30*24*60*60)
+    return resp
+
+
+@main.route('/followed')
+@login_required
+def show_followed():
+    resp = make_response(redirect(url_for('.index')))
+    resp.set_cookie('show_followed', '1', max_age=30*24*60*60)
+    return resp

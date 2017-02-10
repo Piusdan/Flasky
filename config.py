@@ -9,7 +9,7 @@ class Config:
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     FLASKY_MAIL_SUBJECT_PREFIX = '[FLasky]'
     FLASKY_MAIL_SENDER = 'FLasky Admin npiusdan@gmail.com'
-    FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
+    FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN') or 'npiusdan@gmail.com'
     FLASKY_POSTS_PER_PAGE = 8
     SSL_DISABLE = True
 
