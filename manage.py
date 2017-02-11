@@ -18,6 +18,7 @@ def deploy():
     from flask.ext.migrate import upgrade
     from app.models import Role, User
 
+
     # migrate database to latest revision
     upgrade()
 
@@ -25,7 +26,7 @@ def deploy():
     Role.insert_roles()
 
     # create self-follows for all users
-    # User.add_self_follows()
+    User.add_self_follows()
 
 
 def make_shell_context():
